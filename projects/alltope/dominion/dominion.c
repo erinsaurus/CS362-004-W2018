@@ -679,12 +679,12 @@ int smithyCard()
 int adventurerCard()
 {
 	while(drawntreasure<2){
+
 	if (state->deckCount[currentPlayer] <1){//if the deck is empty we need to shuffle discard and add to deck
 	  shuffle(currentPlayer, state);
 	}
 	drawCard(currentPlayer, state);
-	cardDrawn = state->hand[currentPlayer][state->handCount[currentPlayer]];//top card of hand is most recently drawn card.
-		//ADVENTURER BUG : DRAW THE BOTTOM CARD OF THE HAND INSTEAD OF THE TOP
+	cardDrawn = state->hand[currentPlayer][state->handCount[currentPlayer]-1];//top card of hand is most recently drawn card.
 	if (cardDrawn == copper || cardDrawn == silver || cardDrawn == gold)
 	  drawntreasure++;
 	else{
@@ -694,8 +694,9 @@ int adventurerCard()
 	}
       }
       while(z-1>=0){
-	state->discard[currentPlayer][state->discardCount[currentPlayer]++]=temphand[z-1]; // discard all cards in play that have been drawn
-	z=z-1;
+	state->discard[currentPlayer][state->discardCount[currentPlayer+1]++]=temphand[z-1]; // discard all cards in play that have been drawn
+	//ADVENTURER BUG - DISCARD TO NEXT PLAYERS DECK INSTEAD OF CURRENT PLAYER
+  z=z-1;
       }
       return 0;
 }
@@ -1341,20 +1342,20 @@ int updateCoins(int player, struct gameState *state, int bonus)
 
   //add coins for each Treasure card in player's hand
   for (i = 0; i < state->handCount[player]; i++)
-    {
+  {
       if (state->hand[player][i] == copper)
-	{
-	  state->coins += 1;
-	}
+	     {
+	            state->coins += 1;
+	     }
       else if (state->hand[player][i] == silver)
-	{
-	  state->coins += 2;
-	}
+       {
+	           state->coins += 2;
+	     }
       else if (state->hand[player][i] == gold)
-	{
-	  state->coins += 3;
-	}	
-    }	
+	    {
+	           state->coins += 3;
+	    }	
+  }	
 
   //add bonus
   state->coins += bonus;
