@@ -1,7 +1,7 @@
 /* 
  Author: Erin Alltop
  Class: CS362 - Winter 2018
- Description: Assignment 5. randomtestadventurer
+ Description: Assignment 4. randomtestadventurer
 
    Testing Adventurer Card
    Expected results:
@@ -33,8 +33,7 @@ char failedTests[NUM_TESTS][256]; // this is an array to hold strings of which t
 int main () 
 {
     int handpos = 0, choice1 = -1, choice2 = -1, choice3 = -1, bonus = 0;
-    int seed;
-    int thisPlayer;
+    int seed, thisPlayer, numPlayers;
     int failures = 0; // total failures
     int successes = 0; // total successes
     struct gameState G, testG;
@@ -51,9 +50,10 @@ int main ()
     for(int i = 0; i < NUM_ITER; i++)
     {
         // seed and initialize a random game with random values
+        numPlayers = MAX_PLAYERS;//(rand() % (4 - 2)) + 2;
         seed = rand();
-        initializeGame(MAX_PLAYERS, k, seed, &G);
-        thisPlayer = rand() % MAX_PLAYERS;
+        initializeGame(numPlayers, k, seed, &G);
+        thisPlayer = rand() % numPlayers;
         G.whoseTurn = thisPlayer;
         bonus = rand() % 50;
         choice1 = rand() % 50;
@@ -63,13 +63,12 @@ int main ()
         int result = 0;
 
         memcpy(&testG, &G, sizeof(struct gameState)); // copy game state for comparison
-
         cardEffect(adventurer, choice1, choice2, choice3, &testG, handpos, &bonus);
 
-        // Testing to see if the hand count of current player has drawn two cards
+
+        //-------------TEST 1: Two cards are drawn by the current player ----------
         if(testG.handCount[thisPlayer] != G.handCount[thisPlayer] + 2)
         {
-            //printf("TEST FAILED: Player %d didn't draw 2 cards.\n", thisPlayer);
             result = 0;
             for(int i = 0; i < NUM_TESTS; i++)
                 {
@@ -88,10 +87,9 @@ int main ()
         }
         else successes++;
 
-        // Testing to see if the cards drawn are from the current player's deck
+        //-------------TEST 2: Two card are drawn from the current player's deck ----------
         if(testG.deckCount[thisPlayer] != (G.deckCount[thisPlayer] - 2))
         {
-           // printf("TEST FAILED: cards did not come from current player's deck.\n\n");
             result = 0;
             for(int i = 0; i < NUM_TESTS; i++)
                 {
@@ -110,10 +108,9 @@ int main ()
         }
         else successes++;
 
-        // Testing to see if player received any bonus coins (should not)
+        //-------------TEST 3: Player obtains no bonus coins ----------
         if(testG.coins != (G.coins + 0))
         {
-           // printf("TEST FAILED: Bonus coins received. Should have been 0.\n\n");
             result = 0;
             for(int i = 0; i < NUM_TESTS; i++)
                 {
@@ -132,11 +129,10 @@ int main ()
         } 
         else successes++;
 
-        // Testing to see if first card drawn is a treasure card
+        //-------------TEST 4: First card drawn is a treasure card ----------
         int cardDrawn1 = testG.hand[thisPlayer][testG.handCount[thisPlayer] - 1];
         if(cardDrawn1 != copper && cardDrawn1 != silver && cardDrawn1 != gold)
         {
-          //  printf("TEST FAILED: Player %d's newest card isn't money.\n", thisPlayer);
             result = 0;
             for(int i = 0; i < NUM_TESTS; i++)
                 {
@@ -155,11 +151,10 @@ int main ()
         }
         else successes++;
 
-        // Testing to see if the second card drawn is a treasure card
+        //-------------TEST 5: Second card drawn is a treasure card ----------
         int cardDrawn2 = testG.hand[thisPlayer][testG.handCount[thisPlayer] - 2];
         if(cardDrawn2 != copper && cardDrawn2 != silver && cardDrawn2 != gold)
         {
-           // printf("TEST FAILED: Player %d's second newest card isn't money.\n", thisPlayer);
             result = 0;
             for(int i = 0; i < NUM_TESTS; i++)
                 {
@@ -178,14 +173,13 @@ int main ()
         }
         else successes++;
 
-        // Testing that other player states are unchanged
-        for(int i = 1; i < MAX_PLAYERS; i++) //Checking discard count
+        //-------------TEST 6: Other players discard count unchanged ----------
+        for(int i = 1; i < numPlayers; i++) 
         {
             if(testG.discardCount[i] != G.discardCount[i])
             {
-               // printf("TEST FAILED! player %d's dicard count has changed.\n\n", i);
-            result = 0;
-            for(int i = 0; i < NUM_TESTS; i++)
+                result = 0;
+                for(int i = 0; i < NUM_TESTS; i++)
                 {
                     if(strncmp(failedTests[i], "Other players discard counts not changed", 255) == 0)
                     {
@@ -203,11 +197,11 @@ int main ()
             else successes++;
         }
 
-        for(int i = 1; i < MAX_PLAYERS; i++) //Checking deck count
+        //-------------TEST 7: Other players deck count unchanged ----------
+        for(int i = 1; i < numPlayers; i++) 
         {
             if(testG.deckCount[i] != G.deckCount[i])
             {
-               // printf("TEST FAILED! player %d's deck count has changed.\n\n", i);
                 result = 0;
                 for(int i = 0; i < NUM_TESTS; i++)
                 {
@@ -227,11 +221,11 @@ int main ()
             else successes++;
         }
 
-        for(int i = 1; i < MAX_PLAYERS; i++) //Checking hand count
+        //-------------TEST 8: Other players hand count unchanged ----------
+        for(int i = 1; i < numPlayers; i++) 
         {   
             if(testG.handCount[i] != G.handCount[i])
             {
-               // printf("TEST FAILED! player %d's hand count has changed.\n\n", i);
                 result = 0;
                 for(int i = 0; i < NUM_TESTS; i++)
                 {
@@ -252,11 +246,10 @@ int main ()
         }
 
 
-        // Testing that there were no state changes to Victory cards
+        //-------------TEST 9: Victory cards are unchanged ----------
         if((testG.supplyCount[estate] + testG.supplyCount[duchy] + testG.supplyCount[province]) !=
         (G.supplyCount[estate] + G.supplyCount[duchy] + G.supplyCount[province]))
         {
-           // printf("TEST FAILED: Victory cards have changed.\n\n");
             result = 0;
             for(int i = 0; i < NUM_TESTS; i++)
             {
@@ -275,7 +268,7 @@ int main ()
         }
         else successes++;
 
-        //Testing that there were no state changes to Kingdom Cards
+        //-------------TEST 10: Kingdom cards are unchanged ----------
         int testKingCards = (testG.supplyCount[adventurer] + testG.supplyCount[embargo] + testG.supplyCount[village] + testG.supplyCount[minion]
         + testG.supplyCount[mine] + testG.supplyCount[cutpurse] + testG.supplyCount[sea_hag] + testG.supplyCount[tribute]
         + testG.supplyCount[smithy] + testG.supplyCount[council_room]);
@@ -286,7 +279,6 @@ int main ()
 
         if(testKingCards != gKingCards)
         {
-           // printf("TEST FAILED: Kingdom cards have changed.\n\n");
             result = 0;
             for(int i = 0; i < NUM_TESTS; i++)
             {
@@ -307,6 +299,8 @@ int main ()
     }
 
 
+
+    // print out test results
     printf("     -----------------------------------------------------------------\n");
     printf("                        %s Test Results:                              \n", TESTCARD);
     printf("                        Number of tests: %d                           \n", NUM_TESTS);
@@ -318,7 +312,7 @@ int main ()
     // Loop through the failedTests array to print out which tests have failed
     if(failureIter == 0) // if failureIter is 0, no tests failed
     {
-        printf("None\n");
+        printf("                        None\n");
     }
     for(int i = 0; i < failureIter; i++)
     {
@@ -327,6 +321,6 @@ int main ()
     printf("     -----------------------------------------------------------------\n\n");
     printf("-------------------- %s Testing Complete ----------------------------\n", TESTCARD);
 
-
+    return 0;
  
 }
