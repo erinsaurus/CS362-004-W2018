@@ -1,0 +1,119 @@
+
+CS362 - Teammate Bug Report 
+==============================
+
+Title: Player deck counts are incorrect after running Smithy Card
+
+Class: Medium Bug
+
+Date: 2-24-18
+Reported By: Erin Alltop  
+Email: alltope@oregonstate.edu
+
+
+Product: Dominion               Version: boesej refactored code (from Assignment 2)
+Platform: Linux                 
+Browser:  Flip School Server                   
+URL: N/A       
+
+Is it reproducible: Yes 
+
+Description
+===========
+Summary: Deck count for the player is incorrect after calling Smithy Card function
+
+I created an instance of the Dominion game and called the Smithy Card function.
+I then ran test code to check various counts. I found that the deck count was showing an incorrect
+amount of cards in the current player's deck, indicating that one card was "lost."
+This error happens on every run of the Smithy Card.
+
+Steps to Produce/Reproduce
+--------------------------
+Any time the Smithy Card is called this bug occurs.
+
+
+Expected Results
+----------------
+The deck count should be the original deck count plus 3
+
+
+Actual Results
+--------------
+The deck count showed the original plus 2
+
+
+Workarounds
+-----------
+No known workarounds at this time
+
+
+Attachments
+-----------
+Test code output for relevant bug:
+
+TEST 2: Three cards are drawn from the current player's deck
+deck count = 1, expected = 2
+TEST 2 FAILED!
+
+
+==============================
+
+Title: Player hand and deck counts incorrect after running Adventurer Card   
+
+Class: Serious Bug
+
+Date: 2-24-18
+Reported By: Erin Alltop  
+Email: alltope@oregonstate.edu
+
+
+Product: Dominion               Version: boesej refactored code (from Assignment 2)
+Platform: Linux                 
+Browser:  Flip School Server                   
+URL: N/A         
+
+Is it reproducible: Yes
+
+Description
+===========
+Summary: Hand and Deck counts for current player are incorrect after running Adventurer Card function
+
+I created an instance of the Dominion game and called the Adventurer Card function.
+I then ran test code to check various counts. I found that both the hand and deck counts for the 
+current player were not as expected.
+This error happens on every run of the Adventurer Card.
+
+
+Steps to Produce/Reproduce
+--------------------------
+Any time the Adventurer Card function is called this bug occurs
+
+
+Expected Results
+----------------
+Hand count is expected to be increased by two cards after two cards are drawn.
+Deck count is expected to be reduced by two.
+
+
+Actual Results
+--------------
+Hand count was three less than expected
+Deck count was three less than expected
+
+
+Workarounds
+-----------
+No known workaround at this time
+
+
+Attachments
+-----------
+Test code for relevant bug:
+
+TEST 1: Current player receives 2 cards.
+hand count = 4, expected = 7
+TEST 1 FAILED!
+
+TEST 2: Two cards are drawn from the current player's deck.
+deck count = 0, expected = 3
+TEST 2 FAILED!
